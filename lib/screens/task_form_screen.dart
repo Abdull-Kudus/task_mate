@@ -1,16 +1,202 @@
 import 'package:flutter/material.dart';
-import '../models/task.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class TaskFormScreen extends StatelessWidget {
+import '../models/task.dart';
+import '../models/team_member.dart';
+import '../services/storage_service.dart';
+import '../theme/app_theme.dart';
+import '../utils/formatters.dart';
+import '../widgets/bottom_action_bar.dart';
+
+class TaskFormScreen extends StatefulWidget {
   final Task? task;
 
   const TaskFormScreen({super.key, this.task});
 
   @override
+  State<TaskFormScreen> createState() => _TaskFormScreenState();
+}
+
+class _TaskFormScreenState extends State<TaskFormScreen> {
+  final _formKey = GlobalKey<FormState>();
+  
+  late String _title;
+  late String _description;
+  late String _category;
+  String? _assigneeId;
+  DateTime? _dueDate;
+  late TaskPriority _priority;
+  late TaskStatus _status;
+
+  List<TeamMember> _members = [];
+
+  @override
+  void initState() {
+    super.initState();
+    final t = widget.task;
+    _title = t?.title ?? '';
+    _description = t?.description ?? '';
+    _category = t?.category ?? taskCategories.first;
+    _assigneeId = t?.assigneeId;
+    _dueDate = t?.dueDate;
+    _priority = t?.priority ?? TaskPriority.medium;
+    _status = t?.status ?? TaskStatus.todo;
+
+    _loadMembers();
+  }
+
+  Future<void> _loadMembers() async {
+    final members = await StorageService.loadMembers();
+    if (mounted) setState(() => _members = members);
+  }
+
+  Future<void> _pickDate() async {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final firstDate = (_dueDate != null && _dueDate!.isBefore(today)) ? _dueDate! : today;
+
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _dueDate ?? today,
+      firstDate: firstDate,
+      lastDate: today.add(const Duration(days: 3650)),
+    );
+    if (picked != null) {
+      setState(() => _dueDate = picked);
+    }
+  }
+
+  void _saveTask() {
+    // Save logic will be added in the next commit
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final isEditing = widget.task != null;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Task Form')),
-      body: const Center(child: Text('Coming soon')),
+      appBar: AppBar(
+        title: Text(isEditing ? 'Edit Task' : 'Create Task'),
+      ),
+      bottomNavigationBar: BottomActionBar(
+        children: [
+          FilledButton(
+            onPressed: _saveTask,
+            child: const Text('SAVE TASK'),
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextFormField(
+                initialValue: _title,
+                decoration: const InputDecoration(labelText: 'Title'),
+                onSaved: (value) => _title = (value ?? '').trim(),
+              ),
+              const SizedBox(height: 16),
+
+              TextFormField(
+                initialValue: _description,
+                maxLines: 3,
+                decoration: const InputDecoration(
+                  labelText: 'Description',
+                  alignLabelWithHint: true,
+                ),
+                onSaved: (value) => _description = (value ?? '').trim(),
+              ),
+              const SizedBox(height: 16),
+
+              DropdownButtonFormField<String>(
+                value: _category,
+                decoration: const InputDecoration(labelText: 'Category'),
+                items: taskCategories
+                    .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                    .toList(),
+                onChanged: (val) {
+                  if (val != null) setState(() => _category = val);
+                },
+                onSaved: (val) => _category = val!,
+              ),
+              const SizedBox(height: 16),
+
+              DropdownButtonFormField<String>(
+                value: _assigneeId,
+                decoration: const InputDecoration(labelText: 'Assign to'),
+                items: _members
+                    .map((m) => DropdownMenuItem(value: m.id, child: Text(m.name)))
+                    .toList(),
+                onChanged: (val) {
+                  if (val != null) setState(() => _assigneeId = val);
+                },
+                onSaved: (val) => _assigneeId = val,
+              ),
+              const SizedBox(height: 16),
+
+              FormField<DateTime>(
+                initialValue: _dueDate,
+                builder: (state) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          _pickDate().then((_) {
+                            state.didChange(_dueDate);
+                          });
+                        },
+                        borderRadius: BorderRadius.circular(12),
+                        child: InputDecorator(
+                          decoration: InputDecoration(
+                            labelText: 'Due date',
+                            errorText: state.errorText,
+                          ),
+                          child: Text(
+                            _dueDate == null ? 'Select date' : formatDate(_dueDate!),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              const SizedBox(height: 24),
+
+              const Text('Priority', style: AppText.cardTitle),
+              const SizedBox(height: 8),
+              SegmentedButton<TaskPriority>(
+                segments: const [
+                  ButtonSegment(value: TaskPriority.low, label: Text('Low')),
+                  ButtonSegment(value: TaskPriority.medium, label: Text('Medium')),
+                  ButtonSegment(value: TaskPriority.high, label: Text('High')),
+                ],
+                selected: {_priority},
+                onSelectionChanged: (set) {
+                  setState(() => _priority = set.first);
+                },
+              ),
+              const SizedBox(height: 24),
+
+              DropdownButtonFormField<TaskStatus>(
+                value: _status,
+                decoration: const InputDecoration(labelText: 'Status'),
+                items: TaskStatus.values
+                    .map((s) => DropdownMenuItem(value: s, child: Text(statusLabel(s))))
+                    .toList(),
+                onChanged: (val) {
+                  if (val != null) setState(() => _status = val);
+                },
+                onSaved: (val) => _status = val!,
+              ),
+              const SizedBox(height: 24),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
