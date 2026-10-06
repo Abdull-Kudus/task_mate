@@ -67,12 +67,49 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
     }
   }
 
-  void _saveTask() {
+  Future<void> _saveTask() async {
     final isValid = _formKey.currentState!.validate();
     setState(() => _showErrorBanner = !isValid);
+
     if (!isValid) return;
 
-    // Save logic will be added in the next commit
+    _formKey.currentState!.save();
+
+    final tasks = await StorageService.loadTasks();
+
+    if (widget.task == null) {
+      final newTask = Task(
+        id: nextTaskId(tasks),
+        title: _title,
+        description: _description,
+        category: _category,
+        assigneeId: _assigneeId!,
+        dueDate: _dueDate!,
+        priority: _priority,
+        status: _status,
+      );
+      tasks.add(newTask);
+    } else {
+      final index = tasks.indexWhere((t) => t.id == widget.task!.id);
+      if (index != -1) {
+        tasks[index].title = _title;
+        tasks[index].description = _description;
+        tasks[index].category = _category;
+        tasks[index].assigneeId = _assigneeId!;
+        tasks[index].dueDate = _dueDate!;
+        tasks[index].priority = _priority;
+        tasks[index].status = _status;
+      }
+    }
+
+    await StorageService.saveTasks(tasks);
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Task saved')),
+      );
+      Navigator.pop(context);
+    }
   }
 
   @override
