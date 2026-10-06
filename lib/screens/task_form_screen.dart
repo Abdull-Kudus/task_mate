@@ -29,6 +29,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
   late TaskStatus _status;
 
   List<TeamMember> _members = [];
+  bool _showErrorBanner = false;
 
   @override
   void initState() {
@@ -67,6 +68,10 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
   }
 
   void _saveTask() {
+    final isValid = _formKey.currentState!.validate();
+    setState(() => _showErrorBanner = !isValid);
+    if (!isValid) return;
+
     // Save logic will be added in the next commit
   }
 
@@ -93,9 +98,39 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              if (_showErrorBanner)
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  margin: const EdgeInsets.only(bottom: 16),
+                  decoration: BoxDecoration(
+                    color: AppColors.errorContainer,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.error),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(PhosphorIconsRegular.warningCircle, color: AppColors.error),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Please fix the errors below.',
+                          style: AppText.cardTitle.copyWith(color: AppColors.error),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
               TextFormField(
                 initialValue: _title,
                 decoration: const InputDecoration(labelText: 'Title'),
+                validator: (value) {
+                  final text = (value ?? '').trim();
+                  if (text.length < 3 || text.length > 60) {
+                    return 'Enter a title of at least 3 characters';
+                  }
+                  return null;
+                },
                 onSaved: (value) => _title = (value ?? '').trim(),
               ),
               const SizedBox(height: 16),
@@ -107,6 +142,13 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                   labelText: 'Description',
                   alignLabelWithHint: true,
                 ),
+                validator: (value) {
+                  final text = (value ?? '').trim();
+                  if (text.length > 300) {
+                    return 'Keep the description under 300 characters';
+                  }
+                  return null;
+                },
                 onSaved: (value) => _description = (value ?? '').trim(),
               ),
               const SizedBox(height: 16),
@@ -130,6 +172,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                 items: _members
                     .map((m) => DropdownMenuItem(value: m.id, child: Text(m.name)))
                     .toList(),
+                validator: (value) => value == null ? 'Choose a team member' : null,
                 onChanged: (val) {
                   if (val != null) setState(() => _assigneeId = val);
                 },
@@ -139,6 +182,13 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
 
               FormField<DateTime>(
                 initialValue: _dueDate,
+                validator: (val) {
+                  if (_dueDate == null) return 'Choose a due date';
+                  final now = DateTime.now();
+                  final today = DateTime(now.year, now.month, now.day);
+                  if (_dueDate!.isBefore(today)) return 'The due date cannot be in the past';
+                  return null;
+                },
                 builder: (state) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
