@@ -51,7 +51,7 @@ class AppTheme {
 
     return ThemeData(
       useMaterial3: true,
-      textTheme: GoogleFonts.hankenGroteskTextTheme(),
+      fontFamily: GoogleFonts.hankenGrotesk().fontFamily,
       scaffoldBackgroundColor: AppColors.background,
       colorScheme: const ColorScheme.light(
         primary: AppColors.primary,

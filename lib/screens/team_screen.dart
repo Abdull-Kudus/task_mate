@@ -126,7 +126,7 @@ class _TeamScreenState extends State<TeamScreen> {
       body: ListView.separated(
         padding: const EdgeInsets.all(16),
         itemCount: _members.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        separatorBuilder: (context, index) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
           final member = _members[index];
           final open = _openTasks(member);

@@ -181,7 +181,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
           // somewhere else, for example after an edit.
           DropdownButtonFormField<TaskStatus>(
             key: ValueKey(_task.status),
-            value: _task.status,
+            initialValue: _task.status,
             decoration: const InputDecoration(labelText: 'Status'),
             items: [
               for (final status in TaskStatus.values)

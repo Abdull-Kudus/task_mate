@@ -191,7 +191,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
               const SizedBox(height: 16),
 
               DropdownButtonFormField<String>(
-                value: _category,
+                initialValue: _category,
                 decoration: const InputDecoration(labelText: 'Category'),
                 items: taskCategories
                     .map((c) => DropdownMenuItem(value: c, child: Text(c)))
@@ -204,7 +204,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
               const SizedBox(height: 16),
 
               DropdownButtonFormField<String>(
-                value: _assigneeId,
+                initialValue: _assigneeId,
                 decoration: const InputDecoration(labelText: 'Assign to'),
                 items: _members
                     .map((m) => DropdownMenuItem(value: m.id, child: Text(m.name)))
@@ -269,7 +269,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
               const SizedBox(height: 24),
 
               DropdownButtonFormField<TaskStatus>(
-                value: _status,
+                initialValue: _status,
                 decoration: const InputDecoration(labelText: 'Status'),
                 items: TaskStatus.values
                     .map((s) => DropdownMenuItem(value: s, child: Text(statusLabel(s))))
