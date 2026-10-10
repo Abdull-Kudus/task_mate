@@ -1,8 +1,8 @@
-# Task Mate 🚀
+# Task Mate
 
 Task Mate is a lightweight, offline-first Flutter task management application built to help teams organize, prioritize, and track their workflows efficiently. It features a robust Service-Level Agreement (SLA) tracking system and a beautiful, modern UI.
 
-## ✨ Key Features
+## Key Features
 
 *   **SLA Tracking System:** Automatically calculates whether a task is *On Track*, *At Risk*, or *Overdue* based on its deadline and assigned priority level.
 *   **Offline Data Persistence:** Built using `SharedPreferences` to instantly save all tasks and team member data locally on your device without needing a backend.
@@ -15,12 +15,12 @@ Task Mate is a lightweight, offline-first Flutter task management application bu
     *   Custom premium typography using the **Mona Sans** font family.
     *   Professional icon suite using **Phosphor Icons**.
 
-## 🛠️ Tech Stack
+## Tech Stack
 *   **Framework:** Flutter / Dart
 *   **Local Storage:** SharedPreferences
 *   **Assets:** Mona Sans (Local Font), Phosphor Icons Flutter, DiceBear API (Network Images)
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 Make sure you have Flutter installed on your machine. You can verify your installation by running:
@@ -50,7 +50,7 @@ flutter run
 ```
 *(Note: To see the dynamic DiceBear avatars, ensure your emulator or physical device is connected to the internet).*
 
-## 👥 Contributors
+## Contributors
 *   **Abdul-Kudus** - Lead Developer & Project Manager
 *   **Nkingi** - Developer
 *   **Methode** - Developer
