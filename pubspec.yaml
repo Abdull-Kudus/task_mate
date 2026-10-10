@@ -37,7 +37,6 @@ dependencies:
   shared_preferences: ^2.5.6
   google_fonts: ^9.0.0
   phosphoricons_flutter: ^1.1.1
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -59,6 +58,17 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  fonts:
+    - family: Mona Sans
+      fonts:
+        - asset: assets/fonts/MonaSans-Regular.ttf
+        - asset: assets/fonts/MonaSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/MonaSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/MonaSans-Bold.ttf
+          weight: 700
 
   # To add assets to your application, add an assets section, like this:
   # assets:

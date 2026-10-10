@@ -37,14 +37,16 @@ class MemberAvatar extends StatelessWidget {
     return CircleAvatar(
       radius: radius,
       backgroundColor: _backgrounds[colour],
-      child: Text(
-        index < 0 ? '?' : members[index].initials,
-        style: TextStyle(
-          color: _foregrounds[colour],
-          fontSize: radius * 0.7,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
+      child: index < 0 
+        ? Text('?', style: TextStyle(color: _foregrounds[colour], fontSize: radius * 0.7))
+        : ClipOval(
+            child: Image.network(
+              'https://api.dicebear.com/8.x/bottts/png?seed=${members[index].name}&backgroundColor=transparent',
+              width: radius * 2,
+              height: radius * 2,
+              fit: BoxFit.cover,
+            ),
+          ),
     );
   }
 }

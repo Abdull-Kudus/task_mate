@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AppColors {
   static const primary = Color(0xFF88E788);
@@ -51,7 +50,7 @@ class AppTheme {
 
     return ThemeData(
       useMaterial3: true,
-      fontFamily: GoogleFonts.hankenGrotesk().fontFamily,
+      fontFamily: 'Mona Sans',
       scaffoldBackgroundColor: AppColors.background,
       colorScheme: const ColorScheme.light(
         primary: AppColors.primary,
@@ -67,9 +66,10 @@ class AppTheme {
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.onPrimary,
-        elevation: 0,
+        
         scrolledUnderElevation: 0,
-        titleTextStyle: GoogleFonts.hankenGrotesk(
+        titleTextStyle: const TextStyle(
+          fontFamily: 'Mona Sans',
           fontSize: 22,
           fontWeight: FontWeight.w700,
           color: AppColors.onPrimary,
@@ -104,12 +104,12 @@ class AppTheme {
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.onPrimary,
-        elevation: 2,
+        
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: AppColors.surface,
         indicatorColor: AppColors.primary,
-        elevation: 0,
+        
         height: 80,
         iconTheme: WidgetStateProperty.resolveWith(
           (states) => IconThemeData(
@@ -119,7 +119,8 @@ class AppTheme {
           ),
         ),
         labelTextStyle: WidgetStateProperty.resolveWith(
-          (states) => GoogleFonts.hankenGrotesk(
+          (states) => TextStyle(
+            fontFamily: 'Mona Sans',
             fontSize: 12,
             fontWeight: FontWeight.w600,
             color: states.contains(WidgetState.selected)

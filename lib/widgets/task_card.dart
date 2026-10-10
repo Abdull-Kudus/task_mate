@@ -13,7 +13,7 @@ import 'sla_badge.dart';
 IconData categoryIcon(String category) {
   switch (category) {
     case 'UI Design':
-      return PhosphorIconsRegular.paintBrush;
+      return PhosphorIconsRegular.pencilSimple;
     case 'Development':
       return PhosphorIconsRegular.code;
     case 'Testing':
@@ -21,7 +21,7 @@ IconData categoryIcon(String category) {
     case 'Documentation':
       return PhosphorIconsRegular.fileText;
     default:
-      return PhosphorIconsRegular.kanban;
+      return PhosphorIconsRegular.listChecks;
   }
 }
 
